@@ -13,6 +13,7 @@
     "format": "prettier --write .",
     "format:check": "prettier --check .",
     "cf:whoami": "wrangler whoami",
+    "cf:types": "wrangler types",
     "cf:dev": "wrangler dev",
     "deploy": "npm run build && wrangler deploy",
     "deploy:preview": "npm run build && wrangler versions upload"

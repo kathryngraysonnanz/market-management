@@ -7,3 +7,4 @@ telerik-license.txt
 public
 src/assets
 .wrangler
+worker-configuration.d.ts

@@ -10,6 +10,7 @@ export default defineConfig([
   globalIgnores(['dist', 'coverage', '.nia', '.wrangler']),
   {
     files: ['**/*.{ts,tsx}'],
+    ignores: ['src/worker/**'],
     extends: [
       js.configs.recommended,
       tseslint.configs.recommended,
@@ -19,6 +20,13 @@ export default defineConfig([
     ],
     languageOptions: {
       globals: globals.browser,
+    },
+  },
+  {
+    files: ['src/worker/**/*.ts'],
+    extends: [js.configs.recommended, tseslint.configs.recommended, prettier],
+    languageOptions: {
+      globals: globals.worker,
     },
   },
 ])
