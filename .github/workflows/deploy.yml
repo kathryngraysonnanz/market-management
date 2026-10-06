@@ -1,0 +1,89 @@
+name: Deploy
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+  workflow_dispatch:
+
+concurrency:
+  group: deploy-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  pull-requests: write
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v6
+
+      - uses: actions/setup-node@v6
+        with:
+          node-version-file: '.nvmrc'
+
+      - name: Authenticate to private registry
+        env:
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          printf '//pkg.harness.io/pkg/ct8onj8YTdaXtKaFsYCRLg/org-devtools-npm/npm/:_authToken=%s\n' "$NPM_TOKEN" >> "$HOME/.npmrc"
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Activate KendoReact licence
+        env:
+          KENDO_UI_LICENSE: ${{ secrets.KENDO_UI_LICENSE }}
+        run: npx kendo-ui-license activate
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Type-check
+        run: npm run typecheck
+
+      - name: Build
+        env:
+          VITE_APP_NAME: ${{ vars.VITE_APP_NAME || 'BMTM Cockpit' }}
+        run: npm run build
+
+      - name: Deploy to production
+        if: github.event_name != 'pull_request'
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '4.143.0'
+          command: deploy
+
+      - name: Upload preview version
+        id: preview
+        if: github.event_name == 'pull_request'
+        uses: cloudflare/wrangler-action@v4
+        with:
+          apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          wranglerVersion: '4.143.0'
+          command: versions upload --preview-alias pr-${{ github.event.number }}
+
+      - name: Comment preview URL
+        if: github.event_name == 'pull_request'
+        uses: actions/github-script@v8
+        with:
+          script: |
+            const url = `https://pr-${context.issue.number}-market-management.workers.dev`
+            const marker = '<!-- cf-preview -->'
+            const body = `${marker}\nPreview for this PR: ${url}\n\nThis is a non-production version; \`main\` is unaffected.`
+            const { data: comments } = await github.rest.issues.listComments({
+              ...context.repo, issue_number: context.issue.number,
+            })
+            const existing = comments.find((c) => c.body.includes(marker))
+            if (existing) {
+              await github.rest.issues.updateComment({ ...context.repo, comment_id: existing.id, body })
+            } else {
+              await github.rest.issues.createComment({ ...context.repo, issue_number: context.issue.number, body })
+            }
