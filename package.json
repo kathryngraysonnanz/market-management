@@ -19,6 +19,7 @@
     "deploy:preview": "npm run build && wrangler versions upload"
   },
   "dependencies": {
+    "@neondatabase/serverless": "1.1.0",
     "@progress/kendo-licensing": "1.11.3",
     "@progress/kendo-react-animation": "16.1.0",
     "@progress/kendo-react-buttons": "16.1.0",

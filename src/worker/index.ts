@@ -8,16 +8,21 @@
  * Server-side secrets are read from the `env` argument. They never reach the browser.
  * Never import anything from this directory into `src/` application code.
  */
-import { handleHealth } from './routes/health.ts'
+import { handleDbHealth, handleHealth } from './routes/health.ts'
+import type { WorkerEnv } from './types.ts'
 
 export default {
-  async fetch(request: Request): Promise<Response> {
+  async fetch(request: Request, env: WorkerEnv): Promise<Response> {
     const { pathname } = new URL(request.url)
 
     if (pathname === '/api/health') {
       return handleHealth()
     }
 
+    if (pathname === '/api/db/health') {
+      return handleDbHealth(env)
+    }
+
     return Response.json({ error: 'not found' }, { status: 404 })
   },
-} satisfies ExportedHandler
+} satisfies ExportedHandler<WorkerEnv>
