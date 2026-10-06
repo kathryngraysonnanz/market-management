@@ -12,7 +12,7 @@ displays it in a single, user-friendly dashboard.
 | Language        | TypeScript                                 |
 | Build tool      | Vite                                       |
 | UI components   | KendoReact (`@progress/kendo-react-*`)     |
-| Theme           | `@progress/kendo-theme-default`            |
+| Theme           | `@progress/kendo-theme-meridian` (custom tokens in `src/styles/`) |
 | Linting         | ESLint (flat config) + `typescript-eslint` |
 | Formatting      | Prettier                                   |
 | Package manager | npm                                        |
@@ -54,7 +54,7 @@ src/
 │   └── dashboard/
 ├── pages/        Route-level compositions
 ├── lib/          Framework-agnostic helpers, types and constants
-├── styles/       Kendo theme bridge (kendo-overrides.css)
+├── styles/       Kendo theme (index.scss + ThemeBuilder tokens, kendo-overrides.css)
 ├── assets/       Static assets imported by the bundler
 ├── App.tsx       Composes the shell with the current page
 └── main.tsx      React entry point; imports the Kendo theme
@@ -82,12 +82,17 @@ Components currently in use (all free tier): `AppBar`, `Drawer`, `Card`, `GridLa
 
 `src/main.tsx` imports stylesheets in a significant order:
 
-1. `@progress/kendo-theme-default/dist/all.css` — the Kendo baseline.
-2. `src/index.css` — this project's design tokens.
-3. `src/styles/kendo-overrides.css` — maps Kendo CSS variables onto those tokens.
+1. `src/styles/index.scss` — the Kendo theme, built with `@progress/kendo-theme-meridian`
+   and this project's custom palette/spacing/radius tokens (`src/styles/_tokens.scss`,
+   generated via Progress ThemeBuilder).
+2. `src/index.css` — this project's non-Kendo design tokens (used outside Kendo
+   components).
+3. `src/styles/kendo-overrides.css` — small layout fixes that aren't theme concerns
+   (e.g. the drawer filling the viewport).
 
-Change the palette by editing the tokens in `src/index.css`; do not edit the Kendo theme
-package.
+Change the palette, spacing or radii by editing `src/styles/_tokens.scss` (ideally by
+re-exporting from Progress ThemeBuilder); component-level tweaks live in
+`src/styles/_overrides.scss`. Do not edit the `@progress/kendo-theme-meridian` package.
 
 ## Telerik licensing
 

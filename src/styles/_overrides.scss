@@ -1,0 +1,13 @@
+// Compatible with @progress/kendo-theme-meridian v.14.5.0
+
+@use 'tokens' as *;
+  @use 'placeholders' as *;
+
+  @use 'kendo' as *;
+
+    .k-button{
+    background-color: k-color( base );
+            background-image: none;
+            color: k-color( inverse-emphasis );
+        
+}

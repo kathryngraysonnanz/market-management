@@ -7,6 +7,15 @@ const fromRoot = (relativePath: string) => fileURLToPath(new URL(relativePath, i
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  css: {
+    preprocessorOptions: {
+      scss: {
+        // @progress/kendo-theme-meridian still uses the legacy Sass if() syntax;
+        // silence its deprecation noise without hiding warnings from our own code.
+        quietDeps: true,
+      },
+    },
+  },
   resolve: {
     // Specific aliases are listed before the general '@' alias.
     alias: {

@@ -1,24 +1,9 @@
 /*
- * Bridges the Kendo Default theme to the design tokens declared in src/index.css.
- * Kendo reads its own CSS custom properties; this file points them at ours so the
- * two systems share one palette.
+ * Layout fixes for the Kendo theme (src/styles/index.scss, built on
+ * @progress/kendo-theme-meridian with the project's custom design tokens in
+ * src/styles/_tokens.scss). The theme now owns the full Kendo color and
+ * typography palette directly, so no variable bridging is needed here.
  */
-:root {
-  --kendo-color-primary: var(--accent);
-  --kendo-color-primary-contrast: #fff;
-  --kendo-color-base: var(--bg);
-  --kendo-color-on-base: var(--text);
-  --kendo-color-border: var(--border);
-  --kendo-color-surface: var(--bg);
-  --kendo-color-app-surface: var(--bg);
-  --kendo-font-family: var(--sans);
-  --kendo-font-family-monospace: var(--mono);
-}
-
-/* The Kendo reset sets its own base font size; keep the project's scale. */
-body {
-  font-family: var(--sans);
-}
 
 /* Drawer must fill the viewport below the sticky AppBar. */
 .app-shell .k-drawer-container {
