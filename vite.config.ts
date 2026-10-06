@@ -1,7 +1,24 @@
+import { fileURLToPath, URL } from 'node:url'
 import react from '@vitejs/plugin-react'
 import { defineConfig } from 'vite'
+
+const fromRoot = (relativePath: string) => fileURLToPath(new URL(relativePath, import.meta.url))
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [react()],
+  resolve: {
+    // Specific aliases are listed before the general '@' alias.
+    alias: {
+      '@components': fromRoot('./src/components'),
+      '@features': fromRoot('./src/features'),
+      '@lib': fromRoot('./src/lib'),
+      '@pages': fromRoot('./src/pages'),
+      '@': fromRoot('./src'),
+    },
+  },
+  server: {
+    port: 5173,
+    strictPort: true,
+  },
 })
