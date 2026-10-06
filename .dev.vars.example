@@ -1,0 +1,19 @@
+# ---------------------------------------------------------------------------
+# Cloudflare Worker RUNTIME secrets — server-side only, never sent to the
+# browser. Read by `wrangler dev` from a local `.dev.vars` file.
+#
+# Copy this file to `.dev.vars` and fill in real values. `.dev.vars` is
+# git-ignored and MUST NOT be committed — this repository is public.
+#
+# In production these are NOT read from any file. Set each one with:
+#     npx wrangler secret put <NAME>
+# or in the Cloudflare dashboard under
+#     Workers & Pages > market-management > Settings > Variables and Secrets
+# ---------------------------------------------------------------------------
+#
+# STATUS: no Worker script exists yet (wrangler.jsonc has no `main` field), so
+# nothing below is consumed today. This file documents the pattern that MUST be
+# used when third-party integrations land, instead of VITE_* variables.
+#
+# Example shape for a future weather integration:
+# WEATHER_API_KEY="replace-me"
