@@ -1,0 +1,19 @@
+.dashboard__sources {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-top: 1.5rem;
+}
+
+/* Collapse the Kendo GridLayout columns on narrow viewports. */
+@media (max-width: 900px) {
+  .dashboard__grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+  }
+}
+
+@media (max-width: 560px) {
+  .dashboard__grid {
+    grid-template-columns: 1fr !important;
+  }
+}
