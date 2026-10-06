@@ -20,5 +20,14 @@ export default defineConfig({
   server: {
     port: 5173,
     strictPort: true,
+    // `npm run dev` serves only the SPA. Forward `/api/*` to a separately running
+    // `npm run cf:dev` (Wrangler, port 8787) so the client can call its own API during
+    // development. Run both processes side by side.
+    proxy: {
+      '/api': {
+        target: 'http://localhost:8787',
+        changeOrigin: true,
+      },
+    },
   },
 })

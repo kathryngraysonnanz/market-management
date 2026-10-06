@@ -9,11 +9,16 @@
 #     npx wrangler secret put <NAME>
 # or in the Cloudflare dashboard under
 #     Workers & Pages > market-management > Settings > Variables and Secrets
+#
+# Never duplicate any name below into .env.local or into a VITE_* variable:
+# Vite inlines VITE_* values into the public browser bundle.
 # ---------------------------------------------------------------------------
+
+# Neon PostgreSQL connection string, POOLED endpoint (hostname contains "-pooler").
+# Locally this should point at the Neon `development` branch, never `production`.
+# Copy it from the Neon console: Connect > select branch > Connection pooling ON.
+# Keep the ?sslmode=... query parameters exactly as Neon emits them.
 #
-# STATUS: no Worker script exists yet (wrangler.jsonc has no `main` field), so
-# nothing below is consumed today. This file documents the pattern that MUST be
-# used when third-party integrations land, instead of VITE_* variables.
-#
-# Example shape for a future weather integration:
-# WEATHER_API_KEY="replace-me"
+# Schema migrations (out of scope today) require the DIRECT endpoint instead —
+# the hostname without "-pooler".
+DATABASE_URL="******ep-example-123456-pooler.REGION.aws.neon.tech/DATABASE?sslmode=require&channel_binding=require"
