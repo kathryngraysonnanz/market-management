@@ -1,4 +1,4 @@
-# BMTM Cockpit
+# Market Management
 
 An app for farmer's market managers to see vital information in one place. Connects to
 third-party apps via APIs to retrieve relevant data (weather, email, budget, and more) and
@@ -144,7 +144,7 @@ Copy `.env.example` to `.env.local` and edit. Adding a new variable means updati
 
 | Variable        | Default        | Purpose                                       |
 | --------------- | -------------- | --------------------------------------------- |
-| `VITE_APP_NAME` | `BMTM Cockpit` | Product name shown in the application header. |
+| `VITE_APP_NAME` | `Market Management` | Product name shown in the application header. |
 
 ### Worker runtime secrets
 

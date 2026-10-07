@@ -48,7 +48,7 @@ jobs:
 
       - name: Build
         env:
-          VITE_APP_NAME: ${{ vars.VITE_APP_NAME || 'BMTM Cockpit' }}
+          VITE_APP_NAME: ${{ vars.VITE_APP_NAME || 'Market Management' }}
         run: npm run build
 
       - name: Deploy to production

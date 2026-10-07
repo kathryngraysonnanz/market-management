@@ -1,6 +1,6 @@
 # Deploying your own instance
 
-BMTM Cockpit is open source. Any farmers' market can run its own independent copy: each instance
+Market Management is open source. Any farmers' market can run its own independent copy: each instance
 is a separate Cloudflare Worker with its own data, its own domain, and its own configuration. This
 guide walks a new operator through standing up a brand-new instance from a fork.
 
@@ -50,7 +50,7 @@ Create at **Settings → Secrets and variables → Actions → Variables**:
 
 | Variable        | Value          |
 | --------------- | -------------- |
-| `VITE_APP_NAME` | `BMTM Cockpit` |
+| `VITE_APP_NAME` | `Market Management` |
 
 Using the `gh` CLI:
 

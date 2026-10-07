@@ -18,7 +18,7 @@ export interface AppEnv {
 }
 
 export const env: AppEnv = {
-  appName: import.meta.env.VITE_APP_NAME ?? 'BMTM Cockpit',
+  appName: import.meta.env.VITE_APP_NAME ?? 'Market Management',
   mode: import.meta.env.MODE,
   isProduction: import.meta.env.PROD,
 }

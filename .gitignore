@@ -151,4 +151,6 @@ vite.config.ts.timestamp-*
 #Telerik license file 
 telerik-license.txt
 
+#Agent harness artifacts 
 .nia/
+.forge/
