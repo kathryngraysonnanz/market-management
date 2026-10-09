@@ -11,6 +11,8 @@ import { neon, type NeonQueryFunction } from '@neondatabase/serverless'
  * interactive transactions. Multiple statements can be sent as a single
  * non-interactive transaction with `sql.transaction([...])`.
  *
+ * Schema changes are therefore never made here — see scripts/migrate.ts and db/README.md.
+ *
  * This module is intentionally the only place that knows which driver is in use. If
  * the project later moves to Cloudflare Hyperdrive with node-postgres, only this file
  * changes; route handlers are unaffected.

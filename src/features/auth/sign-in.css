@@ -1,0 +1,28 @@
+.sign-in {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 24px;
+}
+
+.sign-in__card {
+  width: 100%;
+  max-width: 400px;
+}
+
+.sign-in__fields {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.sign-in__field {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.sign-in__error {
+  color: var(--kendo-color-error, #d9534f);
+}

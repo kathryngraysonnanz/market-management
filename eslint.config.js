@@ -29,4 +29,11 @@ export default defineConfig([
       globals: globals.worker,
     },
   },
+  {
+    files: ['scripts/**/*.ts'],
+    extends: [js.configs.recommended, tseslint.configs.recommended, prettier],
+    languageOptions: {
+      globals: globals.nodeBuiltin,
+    },
+  },
 ])

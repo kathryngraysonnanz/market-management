@@ -46,19 +46,66 @@ jobs:
       - name: Type-check
         run: npm run typecheck
 
+      - name: Run tests
+        run: npm test
+
+      # Fails loudly instead of building an application nobody can sign in to. Every screen in this
+      # app is behind authentication, so a build without VITE_NEON_AUTH_URL produces a deployment
+      # that is 100% unusable while still reporting success. Mirrors the DATABASE_MIGRATIONS_REQUIRED
+      # pattern below: explicit, documented, and loud rather than silent.
+      - name: Require Neon Auth configuration
+        if: vars.VITE_NEON_AUTH_URL == ''
+        run: |
+          echo "::error::VITE_NEON_AUTH_URL repository variable is not set. The application is entirely behind Neon Auth, so a build without it cannot sign anyone in. See docs/DEPLOYMENT.md Step 3c." >&2
+          exit 1
+
       - name: Build
         env:
           VITE_APP_NAME: ${{ vars.VITE_APP_NAME || 'Market Management' }}
+          VITE_NEON_AUTH_URL: ${{ vars.VITE_NEON_AUTH_URL }}
         run: npm run build
 
+      # Fails loudly instead of silently skipping migrations once a deployment has opted in via
+      # the `DATABASE_MIGRATIONS_REQUIRED` repository variable (set this after the first manual
+      # migration run against `production` — see docs/DEPLOYMENT.md Step 3b). Forks that have
+      # not set up a database yet leave this variable unset and continue to deploy with the
+      # migration step skipped, not failed.
+      - name: Require database migrations secret
+        if: github.event_name != 'pull_request' && vars.DATABASE_MIGRATIONS_REQUIRED == 'true' && secrets.DATABASE_URL_DIRECT == ''
+        run: |
+          echo "::error::DATABASE_MIGRATIONS_REQUIRED is 'true' but the DATABASE_URL_DIRECT secret is not set. Refusing to deploy with schema migrations silently skipped. Restore the secret or unset DATABASE_MIGRATIONS_REQUIRED if this is intentional." >&2
+          exit 1
+
+      - name: Apply database migrations
+        if: github.event_name != 'pull_request' && secrets.DATABASE_URL_DIRECT != ''
+        env:
+          DATABASE_URL_DIRECT: ${{ secrets.DATABASE_URL_DIRECT }}
+        run: node scripts/migrate.ts
+
       - name: Deploy to production
+        id: deploy
         if: github.event_name != 'pull_request'
         uses: cloudflare/wrangler-action@v4
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          wranglerVersion: '4.143.0'
+          wranglerVersion: '4.146.0'
           command: deploy
+
+      # Automates the HTTP- and static-analysis-based rows of TASK-5.6's production acceptance
+      # matrix (.forge/work/job_5/code/phase_5.md) on every production deploy, rather than leaving
+      # them to be run by hand after the fact. `deployment-url` is the live URL Wrangler just
+      # deployed to; a short wait absorbs the sub-second propagation delay between a Workers
+      # deploy completing and the new version actually serving traffic. The two token-gated rows
+      # (7, 12) and every inherently manual row (1, 2, 8-11, 13, 16-18) are unaffected — they are
+      # printed as reminders by the script itself and still require a human.
+      - name: Verify production deployment
+        if: github.event_name != 'pull_request'
+        env:
+          CF_URL: ${{ steps.deploy.outputs.deployment-url }}
+        run: |
+          sleep 5
+          npm run verify:production
 
       - name: Upload preview version
         id: preview
@@ -67,7 +114,7 @@ jobs:
         with:
           apiToken: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           accountId: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
-          wranglerVersion: '4.143.0'
+          wranglerVersion: '4.146.0'
           command: versions upload --preview-alias pr-${{ github.event.number }}
 
       - name: Comment preview URL

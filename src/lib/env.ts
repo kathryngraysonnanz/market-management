@@ -15,10 +15,22 @@ export interface AppEnv {
   mode: string
   /** True when built for production. */
   isProduction: boolean
+  /**
+   * Base URL of this environment's Neon Auth (Managed Better Auth) instance.
+   *
+   * Public by design — the browser calls this host directly. This issue introduces no client-side
+   * auth secret of any kind: Managed Better Auth needs no publishable key and no client key, so
+   * there is nothing here that could leak through the bundle.
+   *
+   * Empty string when unset. `src/features/auth/auth-client.ts` treats an empty value as a
+   * configuration error and renders an explicit setup message rather than failing obscurely.
+   */
+  neonAuthUrl: string
 }
 
 export const env: AppEnv = {
   appName: import.meta.env.VITE_APP_NAME ?? 'Market Management',
   mode: import.meta.env.MODE,
   isProduction: import.meta.env.PROD,
+  neonAuthUrl: import.meta.env.VITE_NEON_AUTH_URL ?? '',
 }

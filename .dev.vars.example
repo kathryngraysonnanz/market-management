@@ -19,6 +19,27 @@
 # Copy it from the Neon console: Connect > select branch > Connection pooling ON.
 # Keep the ?sslmode=... query parameters exactly as Neon emits them.
 #
-# Schema migrations (out of scope today) require the DIRECT endpoint instead —
-# the hostname without "-pooler".
+# Schema migrations require the DIRECT endpoint instead — see DATABASE_URL_DIRECT below.
 DATABASE_URL="******ep-example-123456-pooler.REGION.aws.neon.tech/DATABASE?sslmode=require&channel_binding=require"
+
+# Neon PostgreSQL connection string, DIRECT endpoint (same hostname as above but WITHOUT
+# "-pooler"). Used ONLY by the migration runner (`npm run db:migrate`), which runs in Node,
+# outside the Worker. It is deliberately NOT part of WorkerEnv and must NOT be set with
+# `wrangler secret put` — the Worker never needs it and must not be able to run DDL.
+# Locally this points at the Neon `development` branch, never `production`.
+# In CI it is the GitHub Actions repository secret DATABASE_URL_DIRECT, pointing at `production`.
+# Required for a new instance: see docs/DEPLOYMENT.md.
+DATABASE_URL_DIRECT="******ep-example-123456.REGION.aws.neon.tech/DATABASE?sslmode=require&channel_binding=require"
+
+# Base URL of this environment's Neon Auth (Managed Better Auth) instance. Used by the Worker to
+# fetch the public JWKS keys it verifies bearer tokens against (src/worker/auth.ts).
+#
+# NOT SECRET — unlike every other value in this file. It is here only because it is per-environment
+# (the `development` and `production` Neon branches each get their own Auth instance and URL) and
+# this is the repository's single mechanism for per-environment Worker configuration. It is safe in
+# logs and safe in a browser's network tab.
+#
+# Must hold the same value as VITE_NEON_AUTH_URL for the same environment.
+# Locally this points at the Neon `development` branch, never `production`.
+# In production: npx wrangler secret put NEON_AUTH_BASE_URL
+NEON_AUTH_BASE_URL="https://ep-example-123456.neonauth.REGION.aws.neon.tech/DATABASE/auth"

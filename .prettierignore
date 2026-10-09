@@ -8,3 +8,4 @@ public
 src/assets
 .wrangler
 worker-configuration.d.ts
+db
