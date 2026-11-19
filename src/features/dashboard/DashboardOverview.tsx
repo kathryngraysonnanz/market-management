@@ -7,10 +7,12 @@ import {
   GridLayout,
   GridLayoutItem,
 } from '@progress/kendo-react-layout'
+import { Scheduler, AgendaView, TimelineView, DayView, WeekView, MonthView } from '@progress/kendo-react-scheduler'
 import { Chip } from '@progress/kendo-react-buttons'
 import { Typography } from '@progress/kendo-react-common'
 import type { DashboardMetric, DataSourceStatus } from '@lib'
 import './dashboard-overview.css'
+import {sampleData, displayDate} from './sample-dates'; 
 
 const metrics: DashboardMetric[] = [
   { id: 'vendors', label: 'Confirmed vendors', value: '—', caption: 'Awaiting vendor API' },
@@ -49,6 +51,14 @@ export function DashboardOverview() {
           </GridLayoutItem>
         ))}
       </GridLayout>
+
+      <Scheduler data={sampleData} defaultDate={displayDate}>
+            <AgendaView />
+            <TimelineView />
+            <DayView />
+            <WeekView />
+            <MonthView />
+        </Scheduler>;
 
       <div className="dashboard__sources">
         {dataSources.map((source) => (

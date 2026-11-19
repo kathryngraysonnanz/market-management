@@ -40,6 +40,7 @@
     "@progress/kendo-react-layout": "16.1.0",
     "@progress/kendo-react-popup": "16.1.0",
     "@progress/kendo-react-progressbars": "16.1.0",
+    "@progress/kendo-react-scheduler": "^16.2.0",
     "@progress/kendo-svg-icons": "5.4.0",
     "@progress/kendo-theme-meridian": "14.5.0",
     "jose": "6.2.12",
